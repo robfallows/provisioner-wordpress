@@ -1,0 +1,55 @@
+---
+- name: Ensure git is installed
+  apt:
+    name: git
+    state: latest
+
+- name: Ensure /var/www directory exists
+  file:
+    path: /var/www
+    owner: www-data
+    group: www-data
+    state: directory
+
+- name: Ensure WordPress Repo cloned
+  git:
+    repo: 'git://github.com/WordPress/WordPress.git'
+    dest: /var/www/wordpress
+    version: 4.8.1
+  become: true
+  become_user: www-data
+
+- name: Ensure wp-content directory has correct permissions
+  file:
+    path: /var/www/wordpress/wp-content
+    mode: 0775
+    state: directory
+
+- name: Stat wp-salt.php
+  stat:
+    path: /var/www/wordpress/wp-salt.php
+  register: wp_salt
+
+- name: Ensure salt keys are downloaded
+  get_url:
+    url: 'https://api.wordpress.org/secret-key/1.1/salt/'
+    dest: /var/www/wordpress/wp-salt.php
+    owner: www-data
+    group: www-data
+    mode: 0440
+  when: wp_salt.stat.exists != true
+
+- name: Ensure salt keys have a PHP header
+  lineinfile:
+    path: /var/www/wordpress/wp-salt.php
+    line: '<?php'
+    insertbefore: BOF
+    state: present
+
+- name: Ensure wp-config.php is present
+  template:
+    src: wp-config.php.j2
+    dest: /var/www/wordpress/wp-config.php
+    owner: www-data
+    group: www-data
+    mode: 0400

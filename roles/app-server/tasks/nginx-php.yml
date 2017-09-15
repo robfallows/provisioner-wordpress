@@ -1,0 +1,47 @@
+---
+- name: Ensure nginx/php-fpm packages are installed
+  apt:
+    name:
+      - nginx
+      - php-fpm
+      - php-mysql
+      - php-curl
+      - php-gd
+      - php-mbstring
+      - php-mcrypt
+      - php-xml
+      - php-xmlrpc
+    state: latest
+  notify:
+    - restart nginx
+    - restart php-fpm
+
+- name: Ensure php.ini has fix_pathinfo = 0
+  lineinfile:
+    path: /etc/php/7.0/fpm/php.ini
+    line: 'cgi.fix_pathinfo = 0;'
+    state: present
+  notify:
+    - restart php-fpm
+
+- name: Ensure default vhost disabled
+  file:
+    path: /etc/nginx/sites-enabled/default
+    state: absent
+  notify:
+    - reload nginx
+
+- name: Ensure wordpress vhost available
+  template:
+    src: wordpress-nginx.j2
+    dest: /etc/nginx/sites-available/wordpress
+  notify:
+    - reload nginx
+
+- name: Ensure wordpress vhost enabled
+  file:
+    path: /etc/nginx/sites-enabled/wordpress
+    src: /etc/nginx/sites-available/wordpress
+    state: link
+  notify:
+    - reload nginx

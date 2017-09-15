@@ -1,0 +1,7 @@
+---
+- name: Configure a Wordpress LEMP
+  hosts: all
+  become: true
+  roles:
+    - db-server
+    - app-server

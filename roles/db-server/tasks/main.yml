@@ -1,0 +1,28 @@
+---
+
+- name: Ensure MySQL packages are installed
+  apt:
+    name:
+      - mysql-client
+      - mysql-server
+    state: latest
+  notify:
+    - restart mysql
+
+- name: Ensure Python-MySQLdb installed
+  apt:
+    name: python-mysqldb
+    state: latest
+
+- name: Ensure wordpress database exists
+  mysql_db:
+    name: wordpress
+    state: present
+
+- name: Ensure wordpress user exists
+  mysql_user:
+    name: wordpress
+    password: 'notpr0d!'
+    host: localhost
+    priv: 'wordpress.*:ALL'
+    state: present
