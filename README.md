@@ -6,6 +6,10 @@
   * VirtualBox
   * Ansible==2.3.1.0
 
+## Diagram
+
+![Infrastructure](diagrams/infrastructure.png)
+
 ## Launching
 
 ```bash
@@ -18,6 +22,6 @@ http://localhost:22088
 
 ### Notes / References
 
-CloudFormation: http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/sample-templates-applications-us-west-1.html
-Vagrant AWS Provider: https://github.com/mitchellh/vagrant-aws
+  * CloudFormation: http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/sample-templates-applications-us-west-1.html
+  * Vagrant AWS Provider: https://github.com/mitchellh/vagrant-aws
 
