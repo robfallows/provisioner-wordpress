@@ -10,6 +10,8 @@ Vagrant.configure("2") do |config|
         wordpress.vm.provider "virtualbox" do |vb|
             vb.name = "wordpress"
             vb.memory = 512
+            # Added the following line to prevent error running under Windows 10 WSL
+            vb.customize [ "modifyvm", :id, "--uartmode1", "disconnected" ]
         end
 
         wordpress.vm.provision "shell", path: "env/local/userdata.sh"
